@@ -40,23 +40,32 @@ class Game:
         self.tapped = np.zeros((5, 5), dtype=np.bool)
         self.round = 'start'
 
-    def get_state(self):
+    def get_board(self):
         layout = []
 
         for row in range(5):
             layout.append([])
             for col in range(5):
                 color  = int(self.layout[row, col])
-                tapped = bool(self.tapped[row, col])
                 word   = self.words[row, col]
 
                 layout[-1].append({
                     'color' : color,
                     'word'  : word,
-                    'tapped': tapped
                 })
 
         return layout
+
+    def get_state(self):
+        state = []
+
+        for row in range(5):
+            state.append([])
+            for col in range(5):
+                tapped = bool(self.tapped[row, col])
+                state[-1].append(tapped)
+
+        return state
 
     def accept_click(self, i, j):
         self.tapped[i, j] = True
@@ -87,6 +96,11 @@ if __name__ == '__main__':
     def get_leader_board():
         id = request.args.get('session_id')
         return render_template('board.html', session_id=id, player_type='leader')
+
+    @app.route('/board')
+    def get_board():
+        id = request.args.get('session_id')
+        return jsonify(games[id].get_board())
 
     @app.route('/state')
     def get_state():

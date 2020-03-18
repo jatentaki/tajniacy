@@ -47,10 +47,10 @@ function getColor(tapped, color) {
 
 
 $.get({
-    url: 'state',
+    url: 'board',
     data: {session_id: SESSION_ID},
     cache: false,
-}).then(state => {
+}).then(board => {
     var body = document.getElementsByTagName('body')[0];
     var tbl = document.createElement('table');
     tbl.style.width = '500px';
@@ -65,8 +65,8 @@ $.get({
 
         for (var j = 0; j < 5; j++) {
             var td = document.createElement('td');
-            data = state[i][j];
-            td.appendChild(document.createTextNode(data['word']));
+            var word = board[i][j]['word'];
+            td.appendChild(document.createTextNode(word));
 
             td_array.push({
                 td: td,
@@ -85,18 +85,20 @@ $.get({
     function updateTapped(state) {
         for (i = 0; i < 5; ++i) {
             for (j = 0; j < 5; ++j) {
-                var td = tr_array[i][j].td;
-                var stateBlock = state[i][j];
+                var td     = tr_array[i][j].td;
+                var color  = board[i][j]['color'];
+                var tapped = state[i][j];
 
-                td.style.backgroundColor = getColor(
-                    stateBlock['tapped'],
-                    stateBlock['color']
-                );
+                td.style.backgroundColor = getColor(tapped, color);
             }
         }
     }
 
-    updateTapped(state);
+    $.get({
+        url: 'state',
+        data: {session_id: SESSION_ID},
+        cache: false,
+    }).then(updateTapped);
 
     var socket = io.connect('http://' + document.domain + ':' + location.port);
 
@@ -123,10 +125,7 @@ $.get({
         }
     });
 
-    socket.on('click_response', function(updatedState) {
-        updateTapped(updatedState); 
-    });
-
+    socket.on('click_response', updateTapped);
 });
 </script>
 
