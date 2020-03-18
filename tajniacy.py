@@ -61,8 +61,6 @@ class Game:
     def accept_click(self, i, j):
         self.tapped[i, j] = True
 
-        return jsonify(success=True)
-
 if __name__ == '__main__':
     word_list = get_words('slowa.txt')
 
@@ -89,7 +87,9 @@ if __name__ == '__main__':
     @app.route('/click/<int:i>/<int:j>')
     def accept_click(i, j):
         id = request.args.get('session_id')
-        return games[id].accept_click(i, j)
+        games[id].accept_click(i, j)
+
+        return redirect(url_for('get_state', session_id=id))
 
     @app.route('/state')
     def get_state():
