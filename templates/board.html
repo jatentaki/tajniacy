@@ -130,7 +130,11 @@ $.get({
         }
     });
 
-    socket.on('click_response', updateTapped);
+    socket.on('click_response', response => {
+        if (response['session_id'] === SESSION_ID) {
+            updateTapped(response['state']);
+        }
+    });
 });
 </script>
 

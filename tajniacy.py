@@ -113,8 +113,12 @@ if __name__ == '__main__':
 
     @socketio.on('click_event')
     def handle_click_event(json, methods=['POST', 'GET']):
-        game = games[json['session_id']]
+        session_id = json['session_id']
+        game = games[session_id]
         game.accept_click(json['i'], json['j'])
-        socketio.emit('click_response', game.get_state())
+        socketio.emit('click_response', {
+            'state': game.get_state(),
+            'session_id': session_id,
+        })
 
     socketio.run(app, debug=True)
