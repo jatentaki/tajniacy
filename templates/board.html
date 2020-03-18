@@ -47,7 +47,8 @@ function getColor(tapped, color) {
 
 $.get({
     url: 'state',
-    cache: false
+    data: {session_id: SESSION_ID},
+    cache: false,
 }).then(state => {
     var body = document.getElementsByTagName('body')[0];
     var tbl = document.createElement('table');
@@ -71,7 +72,10 @@ $.get({
                 td.onclick = (function makeOnClick(word, i, j) {
                     return () => {
                         if (confirm('Click `' + word + '`?')) {
-                            $.get('click/' + i + '/' + j);
+                            $.get({
+                                url: 'click/' + i + '/' + j,
+                                data: {session_id: SESSION_ID}
+                            });
                         }
                     }
                 })(data['word'], i, j);

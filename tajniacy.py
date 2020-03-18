@@ -1,6 +1,7 @@
+import random, time
 import numpy as np
-import random
-from flask import Flask, render_template, jsonify, send_from_directory
+from flask import Flask, render_template, jsonify, \
+                  send_from_directory, redirect, request, url_for
 
 def get_words(fname):
     with open(fname, 'r') as infile:
@@ -65,27 +66,35 @@ class Game:
 if __name__ == '__main__':
     word_list = get_words('slowa.txt')
 
-    game = Game(word_list)
+    games = {}
+
+    @app.route('/game')
+    def new_game():
+        stamp = str(int(time.time()))
+        games[stamp] = Game(word_list)
+        print('New session', stamp)
+
+        return redirect(url_for('get_player_board', session_id=stamp))
 
     @app.route('/player')
     def get_player_board():
-        return render_template('board.html', session_id=0, player_type='player')
+        id = request.args.get('session_id')
+        return render_template('board.html', session_id=id, player_type='player')
 
     @app.route('/leader')
     def get_leader_board():
-        return render_template('board.html', session_id=0, player_type='leader')
+        id = request.args.get('session_id')
+        return render_template('board.html', session_id=id, player_type='leader')
 
     @app.route('/click/<int:i>/<int:j>')
     def accept_click(i, j):
-        return game.accept_click(i, j)
+        id = request.args.get('session_id')
+        return games[id].accept_click(i, j)
 
     @app.route('/state')
     def get_state():
-        return game.get_state()
-
-    @app.route('/script')
-    def get_script():
-        return send_from_directory('static', 'script.js')
+        id = request.args.get('session_id')
+        return games[id].get_state()
 
     @app.route('/style')
     def get_style():
