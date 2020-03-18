@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     games = {}
 
-    @app.route('/game/<str:lang>')
+    @app.route('/game/<lang>')
     def new_game(lang):
         stamp = str(int(time.time()))
         try:
