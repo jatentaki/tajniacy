@@ -55,7 +55,6 @@ $.get({
     var tbl = document.createElement('table');
     tbl.style.width = '500px';
     tbl.style.height = '500px';
-    tbl.setAttribute('border', '1');
     var tbdy = document.createElement('tbody');
 
     var tr_array = [];
@@ -90,6 +89,11 @@ $.get({
                 var tapped = state[i][j];
 
                 td.style.backgroundColor = getColor(tapped, color);
+
+                if ((PLAYER_TYPE === 'leader') && (tapped)) {
+                    td.style['font-weight'] = 'bold';
+                    td.style['border'] = '5px solid black';
+                }
             }
         }
     }
