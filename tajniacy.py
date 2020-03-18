@@ -121,4 +121,4 @@ if __name__ == '__main__':
             'session_id': session_id,
         })
 
-    socketio.run(app, debug=True)
+    socketio.run(app, host='0.0.0.0', port=80)
