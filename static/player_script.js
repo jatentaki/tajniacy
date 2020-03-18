@@ -1,11 +1,11 @@
-function getColorPlayer(tapped, color) {
-    var if_tapped = {
-        'red': 'red',
-        'blue': 'blue',
-        'gray': 'Coral',
-        'black': 'black'
-    };
+const if_tapped = {
+    0: 'Coral',
+    1: 'red',
+    2: 'blue',
+    3: 'black'
+}
 
+function getColorPlayer(tapped, color) {
     if (tapped) {
         return if_tapped[color];
     } else {
@@ -14,18 +14,11 @@ function getColorPlayer(tapped, color) {
 }
 
 function getColorLeader(tapped, color) {
-    var if_tapped = {
-        'red': 'red',
-        'blue': 'blue',
-        'gray': 'Coral',
-        'black': 'black'
-    };
-
     var if_not_tapped = {
-        'red': 'PaleVioletRed',
-        'blue': 'SkyBlue',
-        'gray': 'Beige',
-        'black': 'Gray'
+        0: 'Beige',
+        1: 'PaleVioletRed',
+        2: 'SkyBlue',
+        3: 'Gray'
     };
 
     if (tapped) {

@@ -32,13 +32,6 @@ def build_layout():
 
 app = Flask(__name__)
 
-INT_TO_COLOR = {
-    1: 'blue',
-    2: 'red',
-    3: 'black',
-    0: 'gray',
-}
-    
 class Game:
     def __init__(self, words):
         self.words  = build_board(words)
@@ -52,7 +45,7 @@ class Game:
         for row in range(5):
             layout.append([])
             for col in range(5):
-                color  = INT_TO_COLOR[self.layout[row, col]]
+                color  = int(self.layout[row, col])
                 tapped = bool(self.tapped[row, col])
                 word   = self.words[row, col]
 
