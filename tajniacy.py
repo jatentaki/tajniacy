@@ -75,15 +75,18 @@ if __name__ == '__main__':
     app.config['SECRET_KEY'] = 'vnkdjnfjknfl1232#'
     socketio = SocketIO(app)
 
-    word_list = get_words('slowa.txt')
-
     games = {}
 
-    @app.route('/game')
-    def new_game():
+    @app.route('/game/<str:lang>')
+    def new_game(lang):
         stamp = str(int(time.time()))
+        try:
+            word_list = get_words(f'{lang}.txt')
+        except IOError:
+            return render_template('no_lang.html', lang=lang), 403
+
         games[stamp] = Game(word_list)
-        print('New session', stamp)
+        print('New session', stamp, 'for', lang)
 
         return redirect(url_for('get_player_board', session_id=stamp))
 
