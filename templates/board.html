@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel= "stylesheet" type= "text/css" href= "style">
+<script>
+const SESSION_ID  = '{{session_id}}';
+const PLAYER_TYPE = '{{player_type}}';
+
 const if_tapped = {
     0: 'Coral',
     1: 'red',
@@ -28,6 +36,15 @@ function getColorLeader(tapped, color) {
     }
 }
 
+function getColor(tapped, color) {
+    if (PLAYER_TYPE === 'player') {
+        return getColorPlayer(tapped, color);
+    } else if (PLAYER_TYPE === 'leader') {
+        return getColorLeader(tapped, color);
+    } else throw ("Invalid PLAYER_TYPE === " + PLAYER_TYPE);
+}
+
+
 $.get({
     url: 'state',
     cache: false
@@ -48,15 +65,17 @@ $.get({
 
             td.appendChild(document.createTextNode(data['word']));
 
-            var color = getColorLeader(data['tapped'], data['color']);
+            var color = getColor(data['tapped'], data['color']);
             td.style.backgroundColor = color;
-            td.onclick = (function makeOnClick(word, i, j) {
-                return () => {
-                    if (confirm('Click `' + word + '`?')) {
-                        $.get('click/' + i + '/' + j);
+            if (PLAYER_TYPE === 'player') {
+                td.onclick = (function makeOnClick(word, i, j) {
+                    return () => {
+                        if (confirm('Click `' + word + '`?')) {
+                            $.get('click/' + i + '/' + j);
+                        }
                     }
-                }
-            })(data['word'], i, j);
+                })(data['word'], i, j);
+            }
 
             tr.appendChild(td)
         }
@@ -66,3 +85,11 @@ $.get({
     body.appendChild(tbl)
 
 });
+</script>
+<!-- <script src="script"></script> -->
+
+<body>
+</body>
+
+
+</html>

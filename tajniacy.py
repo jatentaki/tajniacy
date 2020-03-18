@@ -69,11 +69,11 @@ if __name__ == '__main__':
 
     @app.route('/player')
     def get_player_board():
-        return send_from_directory('static', 'player_board.html')
+        return render_template('board.html', session_id=0, player_type='player')
 
     @app.route('/leader')
     def get_leader_board():
-        return send_from_directory('static', 'leader_board.html')
+        return render_template('board.html', session_id=0, player_type='leader')
 
     @app.route('/click/<int:i>/<int:j>')
     def accept_click(i, j):
@@ -83,13 +83,9 @@ if __name__ == '__main__':
     def get_state():
         return game.get_state()
 
-    @app.route('/player_script')
-    def get_player_script():
-        return send_from_directory('static', 'player_script.js')
-
-    @app.route('/leader_script')
-    def get_leader_script():
-        return send_from_directory('static', 'leader_script.js')
+    @app.route('/script')
+    def get_script():
+        return send_from_directory('static', 'script.js')
 
     @app.route('/style')
     def get_style():
