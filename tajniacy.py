@@ -3,6 +3,8 @@ import numpy as np
 from flask import Flask, render_template, jsonify, \
                   send_from_directory, redirect, request, url_for
 
+from flask_socketio import SocketIO
+
 def get_words(fname):
     with open(fname, 'r') as infile:
         return [l.strip() for l in infile.readlines()]
@@ -31,8 +33,6 @@ def build_layout():
     
     return layout.reshape(5, 5)
 
-app = Flask(__name__)
-
 class Game:
     def __init__(self, words):
         self.words  = build_board(words)
@@ -56,12 +56,16 @@ class Game:
                     'tapped': tapped
                 })
 
-        return jsonify(layout)
+        return layout
 
     def accept_click(self, i, j):
         self.tapped[i, j] = True
 
 if __name__ == '__main__':
+    app = Flask(__name__)
+    app.config['SECRET_KEY'] = 'vnkdjnfjknfl1232#'
+    socketio = SocketIO(app)
+
     word_list = get_words('slowa.txt')
 
     games = {}
@@ -84,20 +88,19 @@ if __name__ == '__main__':
         id = request.args.get('session_id')
         return render_template('board.html', session_id=id, player_type='leader')
 
-    @app.route('/click/<int:i>/<int:j>')
-    def accept_click(i, j):
-        id = request.args.get('session_id')
-        games[id].accept_click(i, j)
-
-        return redirect(url_for('get_state', session_id=id))
-
     @app.route('/state')
     def get_state():
         id = request.args.get('session_id')
-        return games[id].get_state()
+        return jsonify(games[id].get_state())
 
     @app.route('/style')
     def get_style():
         return send_from_directory('static/styles', 'board.css')
 
-    app.run()
+    @socketio.on('click_event')
+    def handle_click_event(json, methods=['POST', 'GET']):
+        game = games[json['session_id']]
+        game.accept_click(json['i'], json['j'])
+        socketio.emit('click_response', game.get_state())
+
+    socketio.run(app, debug=True)

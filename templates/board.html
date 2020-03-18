@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
 <link rel= "stylesheet" type= "text/css" href= "style">
 <script>
 const SESSION_ID  = '{{session_id}}';
@@ -51,8 +51,6 @@ $.get({
     data: {session_id: SESSION_ID},
     cache: false,
 }).then(state => {
-    
-
     var body = document.getElementsByTagName('body')[0];
     var tbl = document.createElement('table');
     tbl.style.width = '500px';
@@ -98,25 +96,37 @@ $.get({
         }
     }
 
-    if (PLAYER_TYPE === 'player') {
+    updateTapped(state);
+
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    socket.on('connect', function() {
+        if (PLAYER_TYPE === 'leader') {
+            return;
+        }
+
         for (i = 0; i < 5; ++i) {
             for (j = 0; j < 5; ++j) {
                 var td = tr_array[i][j];
                 td.td.onclick = (function makeOnClick(td) {
                     return () => {
                         if (confirm('Click `' + td.td.text + '`?')) {
-                            $.get({
-                                url: 'click/' + td.i + '/' + td.j,
-                                data: {session_id: SESSION_ID}
-                            }).then(
-                                state => updateTapped(state)
-                            );
+                            socket.emit('click_event', {
+                                i: td.i,
+                                j: td.j,
+                                session_id: SESSION_ID
+                            });
                         }
                     }
                 })(td);
             }
         }
-    }
+    });
+
+    socket.on('click_response', function(updatedState) {
+        updateTapped(updatedState); 
+    });
+
 });
 </script>
 
