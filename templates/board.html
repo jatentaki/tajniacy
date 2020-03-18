@@ -68,9 +68,10 @@ $.get({
             td.appendChild(document.createTextNode(word));
 
             td_array.push({
-                td: td,
-                i: i,
-                j: j
+                word: word,
+                td  : td,
+                i   : i,
+                j   : j
             });
 
             tr.appendChild(td)
@@ -116,7 +117,7 @@ $.get({
                 var td = tr_array[i][j];
                 td.td.onclick = (function makeOnClick(td) {
                     return () => {
-                        if (confirm('Click `' + td.td.text + '`?')) {
+                        if (confirm('Click `' + td.word + '`?')) {
                             socket.emit('click_event', {
                                 i: td.i,
                                 j: td.j,
