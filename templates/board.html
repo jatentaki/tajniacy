@@ -7,44 +7,12 @@
 const SESSION_ID  = '{{session_id}}';
 const PLAYER_TYPE = '{{player_type}}';
 
-const if_tapped = {
-    0: 'Coral',
-    1: 'red',
-    2: 'blue',
-    3: 'black'
+const COLORS = {
+    0: '188, 151, 86',
+    1: '255, 0, 0',
+    2: '0, 0, 255',
+    3: '80, 80, 80'
 }
-
-function getColorPlayer(tapped, color) {
-    if (tapped) {
-        return if_tapped[color];
-    } else {
-        return 'white';
-    }
-}
-
-function getColorLeader(tapped, color) {
-    var if_not_tapped = {
-        0: 'Beige',
-        1: 'PaleVioletRed',
-        2: 'SkyBlue',
-        3: 'Gray'
-    };
-
-    if (tapped) {
-        return if_tapped[color];
-    } else {
-        return if_not_tapped[color];
-    }
-}
-
-function getColor(tapped, color) {
-    if (PLAYER_TYPE === 'player') {
-        return getColorPlayer(tapped, color);
-    } else if (PLAYER_TYPE === 'leader') {
-        return getColorLeader(tapped, color);
-    } else throw ("Invalid PLAYER_TYPE === " + PLAYER_TYPE);
-}
-
 
 $.get({
     url: 'board',
@@ -85,15 +53,27 @@ $.get({
     function updateTapped(state) {
         for (i = 0; i < 5; ++i) {
             for (j = 0; j < 5; ++j) {
-                var td     = tr_array[i][j].td;
-                var color  = board[i][j]['color'];
-                var tapped = state[i][j];
+                var td         = tr_array[i][j].td;
+                var color_code = board[i][j]['color'];
+                var tapped     = state[i][j];
 
-                td.style.backgroundColor = getColor(tapped, color);
-
-                if ((PLAYER_TYPE === 'leader') && (tapped)) {
-                    td.style['font-weight'] = 'bold';
-                    td.style['border'] = '5px solid black';
+                if (PLAYER_TYPE === 'player') {
+                    if (tapped) {
+                        var rgb = 'rgb(' + COLORS[color_code] + ')';
+                        td.style['backgroundColor'] = rgb;
+                    } else {
+                    	td.style['backgroundColor'] = 'white';
+                    }
+                } else if (PLAYER_TYPE == 'leader') {
+                    var color = COLORS[color_code];
+                    if (tapped) {
+			td.style['background-color'] = 'rgba(' + color + ',.35)';
+                        var grad = 'repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(' + color + ',.5) 20px, rgba(' + color + ',.5) 35px';
+                        td.style['background-image'] = grad;
+                        td.style['font-weight'] = 'bold';
+                    } else {
+                        td.style['background-color'] = 'rgb(' + color + ')';
+                    }
                 }
             }
         }
