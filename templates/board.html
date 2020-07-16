@@ -58,6 +58,7 @@ $.get({
                 var tapped     = state[i][j];
 
                 if (PLAYER_TYPE === 'player') {
+		    td.style['font-weight'] = 'bold';
                     if (tapped) {
                         var rgb = 'rgb(' + COLORS[color_code] + ')';
                         td.style['backgroundColor'] = rgb;
@@ -70,9 +71,9 @@ $.get({
 			td.style['background-color'] = 'rgba(' + color + ',.35)';
                         var grad = 'repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(' + color + ',.5) 20px, rgba(' + color + ',.5) 35px';
                         td.style['background-image'] = grad;
-                        td.style['font-weight'] = 'bold';
                     } else {
-                        td.style['background-color'] = 'rgb(' + color + ')';
+                        td.style['font-weight'] = 'bold';
+                        td.style['background-color'] = 'rgba(' + color + ',.5)';
                     }
                 }
             }

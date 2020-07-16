@@ -1,7 +1,6 @@
 kangur
 nowy jork
 pochodnia
-gładki
 funt
 wybuch
 dusza
@@ -343,7 +342,7 @@ papier
 most
 centrum
 pekin
-bałwak
+bałwan
 kwadrat
 rękawica
 doktor
