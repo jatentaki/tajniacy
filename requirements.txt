@@ -1,5 +1,5 @@
 numpy
 flask
-flask-socketio
+flask-socketio==4.3.2
 gevent
 gevent-websocket
